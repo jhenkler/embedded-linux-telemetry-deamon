@@ -1,0 +1,11 @@
+# build
+/build
+
+#config 
+/config/config.json
+
+#mqtt
+/mqtt/config/config
+/mqtt/config/log
+/mqtt/config/mosquitto.conf
+/mqtt/config/pwfile

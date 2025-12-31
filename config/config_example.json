@@ -1,0 +1,16 @@
+{
+    "log_level": "info", 
+    "broker": {
+        "host": "localhost",
+        "port": 1883,
+        "keepalive_s": 10
+    },
+    "client_id": "pi-sim-01",
+    "interval_ms": 1000,
+    "qos": 1,
+    "retain": false,
+    "metrics": [
+        { "name": "temperature", "unit": "C", "start": 20.0, "step": 0.25, "topic_suffix": "temp"},
+        { "name": "humidity", "unit": "%", "start": 45.0, "step": 0.5, "topic_suffix": "humidity"}
+    ]
+}

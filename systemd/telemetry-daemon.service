@@ -1,0 +1,25 @@
+[Unit]
+Description=Embedded Telemetry Daemon (MQTT publisher)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/telemetry-daemon
+ExecStart=/opt/telemetry-daemon/embedded-linux-telemetry-daemon /etc/telemetry-daemon/config.json
+Restart=on-failure
+RestartSec=2
+Environment=TZ=America/Chicago
+StandardOutput=journal
+StandardError=journal
+TimeoutStopSec=10
+KillSignal=SIGTERM
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
