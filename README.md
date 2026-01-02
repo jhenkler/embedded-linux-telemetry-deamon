@@ -1,4 +1,4 @@
-# Embedded Linux Telemetry Daemon
+# Embedded Linux Telemetry daemon
 
 A production-style embedded Linux telemetry daemon written in C++ that publishes structured, versioned sensor data over MQTT.
 Designed to model real-world device behavior including resilient reconnect logic, runtime configuration, graceful shutdown, and device presence tracking via MQTT Last Will & Testament (LWT).
@@ -49,9 +49,9 @@ This structure allows real hardware sensors to be added later with minimal chang
 * Telemetry:
     - 'devices/<client_id>/<topic_suffix>'
 * Device status (LWT):
-    - 'devices/<client_id>/status>'
+    - 'devices/<client_id>/status'
 * Health/heartbeat:
-    - 'devices/<client_id>/health>'
+    - 'devices/<client_id>/health'
 
 ## Build Instructions
 
@@ -104,7 +104,7 @@ Example config.json
 }
 ```
 
-## Running the Daemon
+## Running the daemon
 ```bash
 ./embedded-linux-telemetry-daemon config/config.json
 ```
