@@ -112,6 +112,7 @@ void MqttClient::tick_reconnect_() {
 
     int rc = mosquitto_reconnect_async(mosq_);
     if (rc == MOSQ_ERR_SUCCESS) {
+        reconnects_.fetch_add(1, std::memory_order_relaxed);
         // schedule next attempt incase it fails
         next_reconnect_ = now + std::chrono::seconds(backoff_seconds_);
         backoff_seconds_ = std::min(backoff_seconds_ * 2, kMaxBackoffSeconds);

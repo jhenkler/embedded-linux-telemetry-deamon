@@ -23,3 +23,8 @@ inline std::string make_topic(std::string_view client_id, std::string_view metri
 inline std::string make_status_topic(std::string_view client_id) {
     return make_topic(client_id, "status");
 }
+
+[[nodiscard]]
+inline std::string make_health_topic(std::string_view client_id) {
+    return make_topic(client_id, "health");
+}

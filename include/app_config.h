@@ -12,6 +12,10 @@ struct MetricConfig {
     double start = 0.0;
     double step = 0.0;
     std::string topic_suffix;
+
+    std::string type = "simulated";
+    int bus = 1; // for i2c
+    std::string address = "0x76"; // for i2c
 };
 
 struct AppConfig {
@@ -68,6 +72,10 @@ inline AppConfig load_config_or_throw(const std::string& path) {
         metric_cfg.start = metric.value("start", 0.0);
         metric_cfg.step = metric.value("step", 0.0);
         metric_cfg.topic_suffix = metric.at("topic_suffix").get<std::string>();
+        
+        metric_cfg.type = metric.value("type", "simulated");
+        metric_cfg.bus = metric.value("bus", 1);
+        metric_cfg.address = metric.value("address", "0x76");
 
         // validate metric
         if (metric_cfg.name.empty()) throw std::runtime_error("metric name must not be empty");

@@ -26,23 +26,36 @@ Key design goals:
 * Device presence tracking using MQTT Last Will & Testament (LWT)
   - Retained online status on connect
   - Retained offline status on crash or power loss
+  - Retained offline status on clean shutdown
 * Thread-safe logging with runtime-configurable log levels
 * systemd service unit with basic hardening
 * Docker-hosted MQTT broker for local testing
 
+> Note: `--print-config` parses and prints the effective configuration (defaults applied) and exits without starting MQTT.
+
 ## Architecture
 
 The project is intentionally structured with clear separation of concerns:
-* Config: JSON parsing and validation
-* Transport: MQTT connection management and publishing
-* Schema: Telemetry and status payload formats
-* Sensors: Pluggable sensor interface (simulated sensors included)
-* Application: Main control loop and lifecycle management
+* Config: JSON parsing + validation ('AppConfig')
+* Transport: MQTT connection management + publishing ('MqttClient')
+* Schema: Telemetry / status payload formats (versioned)
+* Sensors: Pluggable sensor interface ('ISensor') with simulated sensors included
+* Application: Main loop + lifecycle management (signals, systemd-friendly behavior)
 
 This structure allows real hardware sensors to be added later with minimal changes.
 
-# Build Instructions
-## Dependencies
+### Topic Layout
+
+* Telemetry:
+    - 'devices/<client_id>/<topic_suffix>'
+* Device status (LWT):
+    - 'devices/<client_id>/status>'
+* Health/heartbeat:
+    - 'devices/<client_id>/health>'
+
+## Build Instructions
+
+### Dependencies
 
 * C++20 compiler
 * CMake ≥ 3.16
@@ -60,6 +73,11 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
+```
+
+### Local MQTT Broker (Docker)
+```bash
+docker run -d --name mqtt -p 1883:1883 -p 9001:9001 eclipse-mosquitto:2
 ```
 
 ## Configuration
@@ -96,6 +114,18 @@ To observe telemetry:
 mosquitto_sub -h localhost -p 1883 -t "devices/#" -v
 ```
 
+## Example Usage
+```bash
+# Show version
+./embedded-linux-telemetry-daemon --version
+
+# Validate config
+./embedded-linux-telemetry-daemon --print-config /etc/embedded-linux-telemetry-daemon/config.json
+
+# Normal run
+./embedded-linux-telemetry-daemon /etc/embedded-linux-telemetry-daemon/config.json
+```
+
 ## Device Presence (LWT)
 
 The daemon publishes device presence using MQTT retained messages.
@@ -126,13 +156,13 @@ A sample systemd unit file is provided.
 
 ### Install
 ```bash
-sudo cp systemd/telemetry-daemon.service /etc/systemd/system/
+sudo cp systemd/embedded-linux-telemetry-daemon.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now telemetry-daemon
+sudo systemctl enable --now embedded-linux-telemetry-daemon
 ```
 ### View Logs
 ```bash
-journalctl -u telemetry-daemon -f
+journalctl -u embedded-linux-telemetry-daemon -f
 ```
 The service includes basic hardening options such as NoNewPrivileges, PrivateTmp, and ProtectSystem.
 

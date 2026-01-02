@@ -9,6 +9,7 @@ add_executable(embedded-linux-telemetry-daemon
     src/main.cpp
     src/mqtt_client.cpp
     src/simulated_sensor.cpp
+    src/sensor_factory.cpp
 )
 
 target_include_directories(embedded-linux-telemetry-daemon
